@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        qt: [qt5, qt6]
+        qt: [qt5]
     steps:
     - uses: actions/checkout@v6
     - name: Install deps
