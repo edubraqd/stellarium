@@ -19,7 +19,7 @@ core.wait(25);
 core.quitStellarium();
 SSC
 cd "$root"
-LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1600x1000x24" timeout 150 ./AppRun --startup-script t4899.ssc > "../out/$tag.stdout" 2>&1 &
+QT_DEBUG_PLUGINS=1 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1600x1000x24" timeout 150 ./AppRun --startup-script t4899.ssc > "../out/$tag.stdout" 2>&1 &
 pid=$!
 sleep 45
 pgrep -af QtWebEngineProcess > "../out/$tag.pgrep" || echo "no QtWebEngineProcess" > "../out/$tag.pgrep"

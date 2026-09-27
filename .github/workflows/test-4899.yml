@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Install deps
-      run: sudo apt-get update && sudo apt-get install -y xvfb libfuse2 libgl1-mesa-dri
+      run: sudo apt-get update && sudo apt-get install -y xvfb libfuse2 libgl1-mesa-dri libegl1 libopengl0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 libxcb-shape0 libxcb-cursor0 libxcb-xkb1 libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 libasound2
     - name: Fetch and extract AppImage
       env:
         GH_TOKEN: ${{ github.token }}
