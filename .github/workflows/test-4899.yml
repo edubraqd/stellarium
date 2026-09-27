@@ -1,0 +1,41 @@
+name: test-4899
+on:
+  push:
+    branches: [test-4899]
+jobs:
+  release-appimage:
+    name: "26.2 ${{ matrix.qt }}"
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        qt: [qt5, qt6]
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install deps
+      run: sudo apt-get update && sudo apt-get install -y xvfb libfuse2 libgl1-mesa-dri
+    - name: Fetch and extract AppImage
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release download v26.2 -R Stellarium/stellarium -p "Stellarium-26.2-${{ matrix.qt }}-x86_64.AppImage"
+        chmod +x Stellarium-*.AppImage
+        ./Stellarium-*.AppImage --appimage-extract > /dev/null
+        echo "--- QtWebEngineProcess in AppDir:"
+        find squashfs-root -name QtWebEngineProcess
+        echo "--- AppRun.env:"
+        grep -n QTWEBENGINE squashfs-root/AppRun.env
+    - name: Run with shipped env (before)
+      run: bash .github/test-4899/run.sh before || true
+    - name: Set single QTWEBENGINEPROCESS_PATH (after)
+      run: |
+        p=$(cd squashfs-root && find usr -name QtWebEngineProcess -type f | head -1)
+        sed -i "s|^QTWEBENGINEPROCESS_PATH=.*|QTWEBENGINEPROCESS_PATH=\$APPDIR/$p|" squashfs-root/AppRun.env
+        grep -n QTWEBENGINE squashfs-root/AppRun.env
+    - name: Run with single path (after)
+      run: bash .github/test-4899/run.sh after || true
+    - uses: actions/upload-artifact@v7
+      if: always()
+      with:
+        name: logs-${{ matrix.qt }}
+        path: out/
